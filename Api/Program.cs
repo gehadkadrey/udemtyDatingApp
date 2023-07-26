@@ -2,6 +2,7 @@ using System.Text;
 using Api.Data;
 using Api.Extensions;
 using Api.Interfaces;
+using Api.MiddleWare;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddIdentityServices(builder.Configuration);
 //////
 var app = builder.Build();
+//to reduce the amount of information in error that return
+// if(builder.Environment.IsDevelopment())
+// {
+//     app.UseDeveloperExceptionPage();
+// }
+//handle error throw ExceptionMiddleWare class in any request send if there is error then call ExceptionMiddleWare class 
+app.UseMiddleware<ExceptionMiddleWare>();
 app.UseCors(builder=>builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
