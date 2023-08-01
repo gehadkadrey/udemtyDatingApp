@@ -42,5 +42,22 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+//to read seed data
+
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+ var context = services.GetRequiredService<DataContext>();
+ var logger = services.GetService<ILogger<Program>>();
+ 
+try
+{
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
+}
+catch (Exception ex)
+{
+
+    logger.LogError(ex, "An error occurred during migration");
+}
 
 app.Run();
